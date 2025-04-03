@@ -1,11 +1,33 @@
+import { join } from "path";
+import qs from "qs"
 
-import { Button } from "@/components/ui/button";
+const homePageQuery = qs.stringify({
+  populate: {
+    blocks: {
+      on: {
+        "layout.hero-section": {
+          populate: {
+            image: {
+              fields: ["url", "alternativeText"]
+            },
+            link: {
+              populate: true
+            }
+          }
+        }
+      }
+    }
+  },
+});
 
-
-async function getHomePageData(url: string) {
+async function getHomePageData(path: string) {
   const baseUrl = "http://localhost:1337";
+
+  const url = new URL(path, baseUrl)
+  url.search = homePageQuery
+
   try {
-    const res = await fetch(baseUrl + url)
+    const res = await fetch(url.href)
     const data = await res.json()
     return data
   } catch (error) {
@@ -16,8 +38,9 @@ async function getHomePageData(url: string) {
 export default async function Home() {
   const homePageData = await getHomePageData("/api/home-page");
 
-  const { title, description } = homePageData.data;
+  console.dir(homePageData, { depth: null });
 
+  const { title, description } = homePageData.data;
 
   return (
     <div className="mx-auto container p-4">
