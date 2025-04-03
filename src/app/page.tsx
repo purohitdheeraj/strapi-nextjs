@@ -1,5 +1,5 @@
-import { join } from "path";
 import qs from "qs"
+import { HeroSection } from "@/components/custom/hero-section";
 
 const homePageQuery = qs.stringify({
   populate: {
@@ -40,12 +40,11 @@ export default async function Home() {
 
   console.dir(homePageData, { depth: null });
 
-  const { title, description } = homePageData.data;
+  const { title, description, blocks } = homePageData.data;
 
   return (
-    <div className="mx-auto container p-4">
-      <h1 className="text-5xl font-bold">{title}</h1>
-      <p className="text-xl mt-4">{description}</p>
-    </div>
+    <main className="">
+      <HeroSection data={blocks[0]} />
+    </main>
   );
 }
