@@ -1,5 +1,7 @@
 import qs from "qs"
 import { HeroSection } from "@/components/custom/hero-section";
+import { getStrapiURL } from "@/lib/utils";
+import { FeatureSection } from "@/components/custom/feature-section";
 
 const homePageQuery = qs.stringify({
   populate: {
@@ -8,23 +10,32 @@ const homePageQuery = qs.stringify({
         "layout.hero-section": {
           populate: {
             image: {
-              fields: ["url", "alternativeText"]
+              fields: ["url", "alternativeText"],
             },
             link: {
-              populate: true
-            }
-          }
-        }
-      }
-    }
+              populate: true,
+            },
+          },
+        },
+        "layout.features-section": {
+          populate: {
+            feature: {
+              populate: true,
+            },
+          },
+        },
+      },
+    },
   },
 });
 
 async function getHomePageData(path: string) {
-  const baseUrl = "http://localhost:1337";
+  const baseUrl = getStrapiURL();
 
   const url = new URL(path, baseUrl)
   url.search = homePageQuery
+
+  console.log(url.href)
 
   try {
     const res = await fetch(url.href)
@@ -38,13 +49,14 @@ async function getHomePageData(path: string) {
 export default async function Home() {
   const homePageData = await getHomePageData("/api/home-page");
 
-  console.dir(homePageData, { depth: null });
-
   const { title, description, blocks } = homePageData.data;
+
+  console.dir(blocks, { depth: null });
 
   return (
     <main className="">
       <HeroSection data={blocks[0]} />
+      <FeatureSection />
     </main>
   );
 }

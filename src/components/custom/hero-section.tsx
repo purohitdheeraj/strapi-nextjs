@@ -26,7 +26,7 @@ interface HeroSectionProps {
 }
 
 export function HeroSection({ data }: { readonly data: HeroSectionProps }) {
-  console.dir(data, { depth: null });
+  // console.dir(data, { depth: null });
   const { heading, subHeading, image, link } = data;
 
   return (
