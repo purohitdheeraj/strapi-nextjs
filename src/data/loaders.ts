@@ -25,8 +25,8 @@ async function fetchData(url: string) {
 }
 
 export async function getHomePageData() {
-  throw new Error("Test error");
-  
+  // throw new Error("Test error");
+
   const url = new URL("/api/home-page", baseUrl);
 
   url.search = qs.stringify({
@@ -78,6 +78,40 @@ export async function getGlobalPageMetadata() {
 
   url.search = qs.stringify({
     fields: ["title", "description"],
+  });
+
+  return await fetchData(url.href);
+}
+
+export async function getAboutPageData() {
+  // throw new Error("Test error");
+
+  const url = new URL("/api/about-page", baseUrl);
+
+  url.search = qs.stringify({
+    populate: {
+      blocks: {
+        on: {
+          "layout.hero-section": {
+            populate: {
+              image: {
+                fields: ["url", "alternativeText"],
+              },
+              link: {
+                populate: true,
+              },
+            },
+          },
+          "layout.features-section": {
+            populate: {
+              feature: {
+                populate: true,
+              },
+            },
+          },
+        },
+      },
+    },
   });
 
   return await fetchData(url.href);
